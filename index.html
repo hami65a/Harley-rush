@@ -10,6 +10,7 @@
 <meta name="format-detection" content="telephone=no">
 <title>Harley Neon Rush</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; user-select:none; -webkit-user-select:none; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; }
   html,body { width:100%; height:100%; overflow:hidden; overscroll-behavior:none; background:#05050f; font-family:'Segoe UI',Tahoma,Arial,sans-serif; position:fixed; }
@@ -105,7 +106,6 @@
   }
   #langToggle:active { transform:scale(.92); }
 
-  /* Credit signature */
   .credit {
     font-size: 12px;
     color: #8a8ab8;
@@ -705,14 +705,35 @@ function die() {
 }
 
 function reviveWithAd() {
-  // === AdGram integration ===
-  // AdGram.showRewarded('YOUR_ZONE_ID', () => { revive(); });
-  showFakeAd(() => {
-    GAME.lives = 1; GAME.invincible = 120; GAME.state = 'playing';
-    gameOverScreen.classList.add('hidden');
-    Audio2.startEngine();
-    updateHearts();
-  });
+  try {
+    const AdController = window.Adsgram.init({ blockId: "59454" });
+    AdController.show().then((result) => {
+      if (result.done) {
+        GAME.lives = 1; 
+        GAME.invincible = 120; 
+        GAME.state = 'playing';
+        gameOverScreen.classList.add('hidden');
+        Audio2.startEngine();
+        updateHearts();
+      }
+    }).catch((result) => {
+      console.log("Ad error:", result);
+      // اگر تبلیغ لود نشد، بازی رو زنده کن که کاربر گیر نکنه
+      GAME.lives = 1; GAME.invincible = 120; GAME.state = 'playing';
+      gameOverScreen.classList.add('hidden');
+      Audio2.startEngine();
+      updateHearts();
+    });
+  } catch (e) {
+    console.log("Adsgram not ready", e);
+    // همون تبلیغ نمایشی قدیمی به عنوان پشتیبان
+    showFakeAd(() => {
+      GAME.lives = 1; GAME.invincible = 120; GAME.state = 'playing';
+      gameOverScreen.classList.add('hidden');
+      Audio2.startEngine();
+      updateHearts();
+    });
+  }
 }
 
 function showFakeAd(callback) {
