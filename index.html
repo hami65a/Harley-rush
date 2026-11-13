@@ -180,7 +180,6 @@
     <h1 class="logo" id="goTitle" style="font-size:clamp(24px,6.5vw,40px); -webkit-text-fill-color:#ff2d95; color:#ff2d95;"></h1>
     <div id="finalScore"></div>
     <button class="btn ad" id="reviveBtn" type="button"></button>
-    <button class="btn small" id="restartBtn" type="button"></button>
     <div class="credit">Made by <b>Hamed</b></div>
   </div>
 
@@ -220,7 +219,6 @@ const I18N = {
     gameOver:'بازی تموم شد<span style="display:block;font-size:.55em;font-weight:bold;margin-top:4px;direction:ltr;">GAME OVER</span>',
     finalScore:'امتیاز نهایی: <b>{n}</b><small>Final Score: {n}</small>',
     reviveBtn:'📺 تبلیغ ببین و زنده شو<span style="display:block;font-size:.72em;opacity:.85;font-weight:normal;margin-top:2px;direction:ltr;">WATCH AD &amp; REVIVE</span>',
-    restartBtn:'شروع مجدد<span style="display:block;font-size:.78em;opacity:.8;font-weight:normal;margin-top:1px;direction:ltr;">PLAY AGAIN</span>',
     adTitle:'📺 تبلیغ اسپانسر<span style="display:block;font-size:.75em;color:#ff9500;margin-top:2px;direction:ltr;">Sponsored Ad</span>',
     adText:'اینجا جای تبلیغ شماست<br><span style="color:#00f0ff;">AdGram Sponsor</span><small>Your ad goes here</small>',
   },
@@ -239,7 +237,6 @@ const I18N = {
     gameOver:'GAME OVER<span style="display:block;font-size:.55em;font-weight:bold;margin-top:4px;">بازی تموم شد</span>',
     finalScore:'Final Score: <b>{n}</b><small>امتیاز نهایی: {n}</small>',
     reviveBtn:'📺 WATCH AD &amp; REVIVE<span style="display:block;font-size:.72em;opacity:.85;font-weight:normal;margin-top:2px;">تبلیغ ببین و زنده شو</span>',
-    restartBtn:'PLAY AGAIN<span style="display:block;font-size:.78em;opacity:.8;font-weight:normal;margin-top:1px;">شروع مجدد</span>',
     adTitle:'📺 Sponsored Ad<span style="display:block;font-size:.75em;color:#ff9500;margin-top:2px;">تبلیغ اسپانسر</span>',
     adText:'Your ad goes here<br><span style="color:#00f0ff;">AdGram Sponsor</span><small>اینجا جای تبلیغ شماست</small>',
   }
@@ -264,7 +261,6 @@ function applyLang() {
   document.getElementById('tutBtn').innerHTML = t.tutBtn;
   document.getElementById('goTitle').innerHTML = t.gameOver;
   document.getElementById('reviveBtn').innerHTML = t.reviveBtn;
-  document.getElementById('restartBtn').innerHTML = t.restartBtn;
   document.getElementById('adTitle').innerHTML = t.adTitle;
   document.getElementById('adText').innerHTML = t.adText;
   finalScoreEl.innerHTML = t.finalScore.replace(/\{n\}/g, GAME.score);
@@ -786,7 +782,6 @@ bindBtn('startBtn', () => {
 });
 bindBtn('tutBtn', () => startGame());
 bindBtn('reviveBtn', () => reviveWithAd());
-bindBtn('restartBtn', () => startGame());
 
 // ==================== Update ====================
 function update() {
