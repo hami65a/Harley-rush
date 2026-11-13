@@ -9,8 +9,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="format-detection" content="telephone=no">
 <title>Harley Neon Rush</title>
-<script src="https://telegram.org/js/telegram-web-app.js?v=4"></script>
-<script src="https://sad.adsgram.ai/js/sad.min.js?v=4"></script>
+<script src="https://telegram.org/js/telegram-web-app.js?v=5"></script>
+<script src="https://sad.adsgram.ai/js/sad.min.js?v=5"></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; user-select:none; -webkit-user-select:none; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; }
   html,body { width:100%; height:100%; overflow:hidden; overscroll-behavior:none; background:#05050f; font-family:'Segoe UI',Tahoma,Arial,sans-serif; position:fixed; }
@@ -63,6 +63,9 @@
     box-shadow:0 0 25px rgba(255,200,0,.7), 0 6px 0 rgba(140,80,0,.9); }
   .btn.small { padding:12px 28px; font-size:15px; background:linear-gradient(135deg,#666,#444);
     box-shadow:0 0 15px rgba(100,100,100,.4), 0 5px 0 #222; min-width:150px; }
+  
+  /* استایل دکمه اشتراک‌گذاری */
+  .btn.share { background:linear-gradient(135deg,#1DA1F2,#0077b6); box-shadow:0 0 25px rgba(29,161,242,.6), 0 5px 0 rgba(0,60,100,.9); }
 
   #tutorial { z-index:70; }
   .tut-card {
@@ -157,6 +160,7 @@
     <h2 class="logo2">RUSH 🏍️</h2>
     <p id="startTagline" style="color:#b8b8ff; font-size:14px; max-width:320px; line-height:1.9;"></p>
     <button class="btn" id="startBtn" type="button"></button>
+    <button class="btn share small" id="shareBtnStart" type="button"></button>
     <div class="credit">Made by <b>Hamed</b></div>
   </div>
 
@@ -180,10 +184,9 @@
     <h1 class="logo" id="goTitle" style="font-size:clamp(24px,6.5vw,40px); -webkit-text-fill-color:#ff2d95; color:#ff2d95;"></h1>
     <div id="finalScore"></div>
     
-    <!-- دکمه تبلیغ (اختیاری) -->
     <button class="btn ad" id="reviveBtn" type="button"></button>
-    <!-- دکمه شروع مجدد (برای رعایت بند 11) -->
     <button class="btn small" id="restartBtn" type="button"></button>
+    <button class="btn share small" id="shareBtnOver" type="button"></button>
     
     <div class="credit">Made by <b>Hamed</b></div>
   </div>
@@ -214,6 +217,7 @@ const I18N = {
     scoreLabel:'امتیاز', speedUnit:'km/h',
     tagline:'سریع‌ترین موتور هارلی رو برون!<br>از ماشین‌ها رد شو و سکه جمع کن',
     startBtn:'شروع بازی<span style="display:block;font-size:.72em;opacity:.8;font-weight:normal;margin-top:2px;direction:ltr;">START</span>',
+    shareBtn:'اشتراک‌گذاری با دوستان 📤',
     tutTitle:'آموزش بازی',
     tutCardTitle:'کنترل موتور<span style="display:block;font-size:.78em;color:#a855f7;margin-top:3px;direction:ltr;">Control Your Bike</span>',
     tutLine1:'برای تغییر لاین، سمت <b style="color:#ff2d95;">چپ</b> یا <b style="color:#ff2d95;">راست</b> صفحه رو لمس کن.',
@@ -233,6 +237,7 @@ const I18N = {
     scoreLabel:'Score', speedUnit:'km/h',
     tagline:'Ride the fastest Harley.<br>Dodge cars and grab coins.',
     startBtn:'START<span style="display:block;font-size:.72em;opacity:.8;font-weight:normal;margin-top:2px;">شروع بازی</span>',
+    shareBtn:'Share with Friends 📤',
     tutTitle:'HOW TO MOVE',
     tutCardTitle:'Control Your Bike<span style="display:block;font-size:.78em;color:#a855f7;margin-top:3px;">کنترل موتور</span>',
     tutLine1:'Tap the <b style="color:#ff2d95;">LEFT</b> or <b style="color:#ff2d95;">RIGHT</b> side of the screen to switch lanes.',
@@ -261,6 +266,8 @@ function applyLang() {
   document.getElementById('langToggle').textContent = t.toggleLabel;
   document.getElementById('startTagline').innerHTML = t.tagline;
   document.getElementById('startBtn').innerHTML = t.startBtn;
+  document.getElementById('shareBtnStart').textContent = t.shareBtn;
+  document.getElementById('shareBtnOver').textContent = t.shareBtn;
   document.getElementById('tutTitle').textContent = t.tutTitle;
   document.getElementById('tutCardTitle').innerHTML = t.tutCardTitle;
   document.getElementById('tutLine1').innerHTML = t.tutLine1 + (t.tutLine1en ? `<small>${t.tutLine1en}</small>` : '');
@@ -281,6 +288,23 @@ document.getElementById('langToggle').addEventListener('click', () => {
   localStorage.setItem('harley_lang', LANG);
   applyLang();
 });
+
+// ==================== Share Function ====================
+function shareGame() {
+  const shareText = LANG === 'fa' ? 
+    '🏍️ این بازی موتورسواری نئونی رو بازی کن! خیلی باحاله:' : 
+    '🏍️ Play this awesome Neon Motorcycle game!';
+  const shareUrl = 'https://t.me/Harleyrush_gamebot/game';
+  
+  if (tg && tg.switchInlineQuery) {
+    // روش استاندارد تلگرام
+    tg.switchInlineQuery(shareUrl, ['users', 'groups']);
+  } else {
+    // روش جایگزین در صورت عدم پشتیبانی
+    const fullText = encodeURIComponent(`${shareText}\n${shareUrl}`);
+    window.open(`https://t.me/share/url?url=${shareUrl}&text=${shareText}`, '_blank');
+  }
+}
 
 // ==================== AUDIO ENGINE ====================
 const Audio2 = (() => {
@@ -710,7 +734,6 @@ function die() {
 
 function reviveWithAd() {
   try {
-    // استفاده از بلوک تستی 59454
     const AdController = window.Adsgram.init({ blockId: "59454" });
     AdController.show().then((result) => {
       if (result.done) {
@@ -723,7 +746,6 @@ function reviveWithAd() {
       }
     }).catch((result) => {
       console.log("Ad error:", result);
-      // در صورت خطا، بازی ادامه پیدا کند
       GAME.lives = 1; GAME.invincible = 120; GAME.state = 'playing';
       gameOverScreen.classList.add('hidden');
       Audio2.startEngine();
@@ -791,6 +813,10 @@ bindBtn('startBtn', () => {
 bindBtn('tutBtn', () => startGame());
 bindBtn('reviveBtn', () => reviveWithAd());
 bindBtn('restartBtn', () => startGame());
+
+// اتصال دکمه‌های اشتراک‌گذاری
+bindBtn('shareBtnStart', () => shareGame());
+bindBtn('shareBtnOver', () => shareGame());
 
 // ==================== Update ====================
 function update() {
