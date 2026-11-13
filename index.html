@@ -9,8 +9,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="format-detection" content="telephone=no">
 <title>Harley Neon Rush</title>
-<script src="https://telegram.org/js/telegram-web-app.js?v=5"></script>
-<script src="https://sad.adsgram.ai/js/sad.min.js?v=5"></script>
+<script src="https://telegram.org/js/telegram-web-app.js?v=6"></script>
+<script src="https://sad.adsgram.ai/js/sad.min.js?v=6"></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; user-select:none; -webkit-user-select:none; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; }
   html,body { width:100%; height:100%; overflow:hidden; overscroll-behavior:none; background:#05050f; font-family:'Segoe UI',Tahoma,Arial,sans-serif; position:fixed; }
@@ -64,7 +64,6 @@
   .btn.small { padding:12px 28px; font-size:15px; background:linear-gradient(135deg,#666,#444);
     box-shadow:0 0 15px rgba(100,100,100,.4), 0 5px 0 #222; min-width:150px; }
   
-  /* استایل دکمه اشتراک‌گذاری */
   .btn.share { background:linear-gradient(135deg,#1DA1F2,#0077b6); box-shadow:0 0 25px rgba(29,161,242,.6), 0 5px 0 rgba(0,60,100,.9); }
 
   #tutorial { z-index:70; }
@@ -217,7 +216,7 @@ const I18N = {
     scoreLabel:'امتیاز', speedUnit:'km/h',
     tagline:'سریع‌ترین موتور هارلی رو برون!<br>از ماشین‌ها رد شو و سکه جمع کن',
     startBtn:'شروع بازی<span style="display:block;font-size:.72em;opacity:.8;font-weight:normal;margin-top:2px;direction:ltr;">START</span>',
-    shareBtn:'اشتراک‌گذاری با دوستان 📤',
+    shareBtn:'اشتراک‌گذاری با دوستان 📤<span style="display:block;font-size:.72em;opacity:.8;font-weight:normal;margin-top:2px;direction:ltr;">SHARE WITH FRIENDS</span>',
     tutTitle:'آموزش بازی',
     tutCardTitle:'کنترل موتور<span style="display:block;font-size:.78em;color:#a855f7;margin-top:3px;direction:ltr;">Control Your Bike</span>',
     tutLine1:'برای تغییر لاین، سمت <b style="color:#ff2d95;">چپ</b> یا <b style="color:#ff2d95;">راست</b> صفحه رو لمس کن.',
@@ -237,7 +236,7 @@ const I18N = {
     scoreLabel:'Score', speedUnit:'km/h',
     tagline:'Ride the fastest Harley.<br>Dodge cars and grab coins.',
     startBtn:'START<span style="display:block;font-size:.72em;opacity:.8;font-weight:normal;margin-top:2px;">شروع بازی</span>',
-    shareBtn:'Share with Friends 📤',
+    shareBtn:'SHARE WITH FRIENDS 📤<span style="display:block;font-size:.72em;opacity:.8;font-weight:normal;margin-top:2px;">اشتراک‌گذاری با دوستان</span>',
     tutTitle:'HOW TO MOVE',
     tutCardTitle:'Control Your Bike<span style="display:block;font-size:.78em;color:#a855f7;margin-top:3px;">کنترل موتور</span>',
     tutLine1:'Tap the <b style="color:#ff2d95;">LEFT</b> or <b style="color:#ff2d95;">RIGHT</b> side of the screen to switch lanes.',
@@ -266,8 +265,8 @@ function applyLang() {
   document.getElementById('langToggle').textContent = t.toggleLabel;
   document.getElementById('startTagline').innerHTML = t.tagline;
   document.getElementById('startBtn').innerHTML = t.startBtn;
-  document.getElementById('shareBtnStart').textContent = t.shareBtn;
-  document.getElementById('shareBtnOver').textContent = t.shareBtn;
+  document.getElementById('shareBtnStart').innerHTML = t.shareBtn;
+  document.getElementById('shareBtnOver').innerHTML = t.shareBtn;
   document.getElementById('tutTitle').textContent = t.tutTitle;
   document.getElementById('tutCardTitle').innerHTML = t.tutCardTitle;
   document.getElementById('tutLine1').innerHTML = t.tutLine1 + (t.tutLine1en ? `<small>${t.tutLine1en}</small>` : '');
@@ -291,18 +290,21 @@ document.getElementById('langToggle').addEventListener('click', () => {
 
 // ==================== Share Function ====================
 function shareGame() {
-  const shareText = LANG === 'fa' ? 
-    '🏍️ این بازی موتورسواری نئونی رو بازی کن! خیلی باحاله:' : 
-    '🏍️ Play this awesome Neon Motorcycle game!';
+  const shareText = '🏍️ Harley Neon Rush! 🏍️\n\n' +
+                    '🇮🇷 سریع‌ترین بازی موتورسواری تلگرام رو بازی کن! ' +
+                    'از ماشین‌ها جاخالی بده و رکورد بزن.\n\n' +
+                    '🇬🇧 Play the fastest motorcycle game on Telegram! ' +
+                    'Dodge cars and beat your high score.\n\n' +
+                    '👇 Play here / بازی کن:';
+  
   const shareUrl = 'https://t.me/Harleyrush_gamebot/game';
   
   if (tg && tg.switchInlineQuery) {
-    // روش استاندارد تلگرام
+    // روش استاندارد تلگرام برای مینی اپ ها
     tg.switchInlineQuery(shareUrl, ['users', 'groups']);
   } else {
     // روش جایگزین در صورت عدم پشتیبانی
-    const fullText = encodeURIComponent(`${shareText}\n${shareUrl}`);
-    window.open(`https://t.me/share/url?url=${shareUrl}&text=${shareText}`, '_blank');
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`, '_blank');
   }
 }
 
@@ -814,7 +816,6 @@ bindBtn('tutBtn', () => startGame());
 bindBtn('reviveBtn', () => reviveWithAd());
 bindBtn('restartBtn', () => startGame());
 
-// اتصال دکمه‌های اشتراک‌گذاری
 bindBtn('shareBtnStart', () => shareGame());
 bindBtn('shareBtnOver', () => shareGame());
 
